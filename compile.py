@@ -198,10 +198,9 @@ def get_instructions(instructions, ast, arg_to_stack_index, label_counter):
         add_to_dictionary_vals(arg_to_stack_index, -len(args)-1)
 
 
-def compile_source(source):
-    func_asts = [get_func_ast(code) for code in source]
+def compile_ast(function_asts):
     instructions = []
-    for func_ast in func_asts:
+    for func_ast in function_asts:
         func_name = func_ast.tokens[0]
         func_index = len(instructions)
         args = func_ast.tokens[1].tokens

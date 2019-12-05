@@ -1,6 +1,47 @@
 from copy import deepcopy
 
 from compile import Instruction
+from parse import AST
+
+
+def _is_deterministic_function(func_ast):
+    # TODO: this might have to change
+    # right now every function is deterministic
+    # cause theres no random functions are anything
+    return True
+
+
+def _get_calls_in_function_ast(func_ast):
+    if type(func_ast) == AST and func_ast.tokens[0] == 'if':
+        assert len(func_ast.tokens) == 5
+        calls = set()
+        # 1, 2, 4, 5
+        for index in [1, 2, 4]:
+            calls.update(_get_calls_in_function_ast(func_ast.tokens[index]))
+        return calls
+    elif type(func_ast) == AST:
+        calls = set()
+        function = func_ast.tokens[0]
+        calls.add(function)
+        for arg in func_ast.tokens[1:]:
+            calls.update(_get_calls_in_function_ast(arg))
+        return calls
+    else:
+        return set()
+
+
+def get_call_graph(function_asts):
+    node_to_neighbors = {}
+    for func_ast in function_asts:
+        func_name = func_ast.tokens[0]
+        calls = _get_calls_in_function_ast(func_ast.tokens[2])
+        node_to_neighbors[func_name] = calls
+    return node_to_neighbors
+
+
+def optimize_function_ast(func_ast):
+    return func_ast
+
 
 def instructions_equal(i1, i2):
     return len(i1) == len(i2) and all(ii1 == ii2 for (ii1, ii2) in zip(i1, i2))

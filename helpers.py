@@ -3,6 +3,7 @@ def _format_labels(labels):
     s = '{' + ', '.join(s) + '}'
     return 'labels=' + s
 
+
 def print_instructions(instructions):
     for i, instr in enumerate(instructions):
         if instr.func_name is not None:

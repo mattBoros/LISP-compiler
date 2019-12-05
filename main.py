@@ -1,9 +1,10 @@
 import time
 
-from compile import compile_source
-from optimize import optimize_instructions
+from compile import compile_ast
+from optimize import optimize_instructions, optimize_function_ast, get_call_graph
 from helpers import print_instructions
 from execute import execute_instructions, Stack, LinkedList
+from parse import get_func_ast
 
 source = [
 #     '''
@@ -45,8 +46,12 @@ source = [
 
 ]
 
-
-instructions = compile_source(source)
+function_asts = [get_func_ast(code) for code in source]
+print('CALL GRAPH')
+for key, value in get_call_graph(function_asts).items():
+    print(key, ':', value)
+function_asts = [optimize_function_ast(ast) for ast in function_asts]
+instructions = compile_ast(function_asts)
 
 print('\nORIGINAL INSTRUCTIONS')
 print_instructions(instructions)
